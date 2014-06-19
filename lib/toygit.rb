@@ -5,7 +5,7 @@ module ToyGit
     def initialize
       path = Rugged::Repository.discover('.')
       @repo = Rugged::Repository.new(path)
-      raise 'Invalid ToyGit Repository' unless verify
+      prepare
     end
 
     def history
@@ -16,14 +16,14 @@ module ToyGit
 
     private
 
-    def verify
+    def prepare
       commits = []
 
       master = @repo.ref('refs/heads/master')
       walker = Rugged::Walker.new(@repo)
       walker.push master.target
       walker.each do |commit|
-        return false if commit.parents.count > 1
+        raise 'Invalid ToyGit Repository: merge commit %s' % commit.oid if commit.parents.count > 1
         summary = commit.message.lines[0]
         if summary =~ /\[([[:print:]]+)\][[:space:]]?([[:print:]]*)/
           chapter = $1
