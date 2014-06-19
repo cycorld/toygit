@@ -8,6 +8,12 @@ module ToyGit
       raise 'Invalid ToyGit Repository' unless verify
     end
 
+    def history
+      @commits.each do |commit|
+        puts "#{commit[:toyid]}\t[#{commit[:chapter]}] #{commit[:step]}"
+      end
+    end
+
     private
 
     def verify
