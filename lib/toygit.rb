@@ -55,5 +55,11 @@ module ToyGit
         step_number += 1
       end
     end
+
+    def commit_from_toyid(toyid)
+      i = @commits.find_index { |commit| commit[:toyid] == toyid }
+      raise 'Invalid ToyId: %s' % toyid if i.nil?
+      @commits[i]
+    end
   end
 end
