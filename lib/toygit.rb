@@ -5,6 +5,7 @@ module ToyGit
     def initialize
       path = Rugged::Repository.discover('.')
       @repo = Rugged::Repository.new(path)
+      @repo.config['notes.rewriteRef'] = 'refs/notes/commits'
       prepare
     end
 
