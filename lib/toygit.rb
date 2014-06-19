@@ -14,6 +14,16 @@ module ToyGit
       end
     end
 
+    def goto(toyid)
+      unless @repo.head.name == 'refs/heads/master'
+        raise 'Invalid branch: switch to the "master" branch first'
+      end
+      commit = commit_from_toyid(toyid)
+      sha = commit[:rugged_commit].oid
+      name = "ToyFix-#{sha}"
+      `git checkout -b #{name} #{sha}`
+    end
+
     private
 
     def prepare
