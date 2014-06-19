@@ -30,7 +30,24 @@ module ToyGit
       end
 
       @commits = commits.reverse
+      give_toyids
       true
+    end
+
+    def give_toyids
+      prev_chapter = nil
+      chapter_number = -1
+      step_number = 0
+      @commits.each do |commit|
+        chapter = commit[:chapter]
+        if prev_chapter != chapter
+          chapter_number += 1
+          step_number = 0
+        end
+        commit[:toyid] = "#{chapter_number}-#{step_number}"
+        prev_chapter = chapter
+        step_number += 1
+      end
     end
   end
 end
