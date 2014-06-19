@@ -25,6 +25,15 @@ module ToyGit
       `git checkout -b #{name} #{sha}`
     end
 
+    def return
+      name = @repo.head.name
+      unless name =~ /refs\/heads\/ToyFix-([0-9a-f]{4,})/
+        raise 'Invalid branch: switch to a ToyGit branch'
+      end
+      base = $1
+      `git rebase #{base} master --onto #{name} && git branch -d ToyFix-#{base}`
+    end
+
     private
 
     def prepare
