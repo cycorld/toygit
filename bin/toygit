@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'toygit'
+
+type = ARGV[0]
+raise 'Usage: toygit (do) [something]' if type.nil?
+target = ARGV[1]
+
+command = ToyGit::Command.new
+case type
+when 'list'
+  command.list
+when 'goto'
+  command.goto target
+when 'return'
+  command.return
+when 'delete'
+  command.delete target
+else
+  raise 'Unknown command: %s' % type
+end
