@@ -34,6 +34,15 @@ module ToyGit
       `git rebase #{base} master --onto #{name} && git branch -d ToyFix-#{base}`
     end
 
+    def delete(toyid)
+      unless @repo.head.name == 'refs/heads/master'
+        raise 'Invalid branch: switch to the "master" branch first'
+      end
+      commit = commit_from_toyid(toyid)
+      sha = commit[:rugged_commit].oid
+      `git rebase #{sha} --onto #{sha}~`
+    end
+
     private
 
     def prepare
