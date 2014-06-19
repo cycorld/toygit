@@ -9,7 +9,7 @@ module ToyGit
       prepare
     end
 
-    def history
+    def list
       @commits.each do |commit|
         puts "#{commit[:toyid]}\t[#{commit[:chapter]}] #{commit[:step]}"
       end
