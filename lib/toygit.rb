@@ -11,7 +11,9 @@ module ToyGit
 
     def list
       @commits.each do |commit|
-        puts "#{commit[:toyid]}\t[#{commit[:chapter]}] #{commit[:step]}"
+        puts "#{commit[:toyid]}\t"\
+          + "#{commit[:rugged_commit].oid[0,7]}\t"\
+          + "[#{commit[:chapter]}] #{commit[:step]}"
       end
     end
 

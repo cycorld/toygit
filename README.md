@@ -10,5 +10,4 @@
 ## Todo
 
 - chapter명 일괄 변경
-- list에 commit hash도 보여주기
 - HEAD 위치 표시해주기
