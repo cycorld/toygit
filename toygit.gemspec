@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'toygit'
-  s.version     = '0.0.1'
+  s.version     = '0.1.0'
   s.date        = '2014-06-20'
   s.summary     = 'ToyGit'
   s.description = 'Toy Git'
