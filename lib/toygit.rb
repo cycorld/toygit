@@ -10,9 +10,12 @@ module ToyGit
     end
 
     def list
+      head_hash = @repo.head.target
       @commits.each do |commit|
-        puts "#{commit[:toyid]}\t"\
-          + "#{commit[:rugged_commit].oid[0,7]}\t"\
+        hash = commit[:rugged_commit].oid
+        star = (head_hash == hash ? '*' : '')
+        puts "#{commit[:toyid]}#{star}\t"\
+          + "#{hash[0,7]}\t"\
           + "[#{commit[:chapter]}] #{commit[:step]}"
       end
     end

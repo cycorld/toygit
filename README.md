@@ -10,4 +10,3 @@
 ## Todo
 
 - chapter명 일괄 변경
-- HEAD 위치 표시해주기
