@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.authors     = ['GYUMIN SIM']
   s.email       = 'sim0629@gmail.com'
   s.files       = ['bin/toygit', 'lib/toygit.rb']
+  s.files       += Dir.glob('lib/toygit/*.rb')
   s.bindir      = 'bin'
   s.executables = ['toygit']
   s.homepage    = 'https://github.com/sim0629/toygit'
