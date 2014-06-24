@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'toygit'
-  s.version     = '0.1.0'
-  s.date        = '2014-06-20'
+  s.version     = `git describe`[1..-1]
+  s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'ToyGit'
   s.description = 'Toy Git'
   s.authors     = ['GYUMIN SIM']
