@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'toygit'
-  s.version     = `git describe`[1..-1]
+  s.version     = `git describe`[1..-1].gsub('-', '.')
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'ToyGit'
   s.description = 'Toy Git'
