@@ -6,8 +6,7 @@ module ToyGit
     attr_reader :commits
 
     def initialize(dir = '.')
-      path = Rugged::Repository.discover(dir)
-      @rugged_repo = Rugged::Repository.new(path)
+      @rugged_repo = Rugged::Repository.discover(dir)
       prepare
     end
 
