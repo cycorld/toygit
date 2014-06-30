@@ -11,7 +11,7 @@ module ToyGit
     end
 
     def commit_from_toyid(toyid)
-      i = @commits.find_index { |commit| commit[:toyid] == toyid }
+      i = @commits.find_index { |commit| commit.toyid == toyid }
       raise 'Invalid ToyId: %s' % toyid if i.nil?
       @commits[i]
     end
@@ -19,7 +19,7 @@ module ToyGit
     private
 
     def prepare
-      commits = []
+      history = []
 
       master = @rugged_repo.ref('refs/heads/master')
       walker = Rugged::Walker.new(@rugged_repo)
@@ -34,25 +34,32 @@ module ToyGit
           chapter = ''
           step = summary
         end
-        commits.push({chapter: chapter, step: step, rugged_commit: commit})
+        history.push({chapter: chapter, step: step, rugged_commit: commit})
       end
 
-      @commits = commits.reverse
-      give_toyids
-      true
+      history = history.reverse
+      give_toyids(history)
+      @commits = history.map do |entry|
+        Commit.new(
+          entry[:toyid],
+          entry[:chapter],
+          entry[:step],
+          entry[:rugged_commit]
+        )
+      end
     end
 
-    def give_toyids
+    def give_toyids(history)
       prev_chapter = nil
       chapter_number = -1
       step_number = 0
-      @commits.each do |commit|
-        chapter = commit[:chapter]
+      history.each do |entry|
+        chapter = entry[:chapter]
         if prev_chapter != chapter
           chapter_number += 1
           step_number = 0
         end
-        commit[:toyid] = "#{chapter_number}-#{step_number}"
+        entry[:toyid] = "#{chapter_number}-#{step_number}"
         prev_chapter = chapter
         step_number += 1
       end

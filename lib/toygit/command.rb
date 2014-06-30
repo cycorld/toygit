@@ -9,11 +9,11 @@ module ToyGit
     def list
       head_hash = @repo.rugged_repo.head.target
       @repo.commits.each do |commit|
-        hash = commit[:rugged_commit].oid
+        hash = commit.rugged_commit.oid
         star = (head_hash == hash ? '*' : '')
-        puts "#{commit[:toyid]}#{star}\t"\
+        puts "#{commit.toyid}#{star}\t"\
           + "#{hash[0,7]}\t"\
-          + "[#{commit[:chapter]}] #{commit[:step]}"
+          + "[#{commit.chapter}] #{commit.step}"
       end
     end
 
@@ -22,7 +22,7 @@ module ToyGit
         raise 'Invalid branch: switch to the "master" branch first'
       end
       commit = @repo.commit_from_toyid(toyid)
-      sha = commit[:rugged_commit].oid
+      sha = commit.rugged_commit.oid
       name = "ToyFix-#{sha}"
       `git checkout -b #{name} #{sha}`
     end
@@ -41,13 +41,13 @@ module ToyGit
         raise 'Invalid branch: switch to the "master" branch first'
       end
       commit = @repo.commit_from_toyid(toyid)
-      sha = commit[:rugged_commit].oid
+      sha = commit.rugged_commit.oid
       `git rebase #{sha} --onto #{sha}~`
     end
 
     def show(toyid)
       commit = @repo.commit_from_toyid(toyid)
-      rugged_commit = commit[:rugged_commit]
+      rugged_commit = commit.rugged_commit
       options = {
         ignore_whitespace: true
       }
