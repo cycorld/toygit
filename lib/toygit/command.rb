@@ -44,5 +44,15 @@ module ToyGit
       sha = commit[:rugged_commit].oid
       `git rebase #{sha} --onto #{sha}~`
     end
+
+    def show(toyid)
+      commit = @repo.commit_from_toyid(toyid)
+      rugged_commit = commit[:rugged_commit]
+      options = {
+        ignore_whitespace: true
+      }
+      diff = rugged_commit.parents[0].diff(rugged_commit, options)
+      puts diff.patch
+    end
   end
 end

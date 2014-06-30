@@ -16,6 +16,8 @@ when 'return'
   command.return
 when 'delete'
   command.delete target
+when 'show'
+  command.show target
 else
   raise 'Unknown command: %s' % type
 end
