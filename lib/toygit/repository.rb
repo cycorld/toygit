@@ -37,7 +37,7 @@ module ToyGit
         history.push({chapter: chapter, step: step, rugged_commit: commit})
       end
 
-      history = history.reverse
+      history.reverse!
       give_toyids(history)
       @commits = history.map do |entry|
         Commit.new(
