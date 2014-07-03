@@ -47,7 +47,11 @@ module ToyGit
 
     def show(toyid)
       commit = @repo.commit_from_toyid(toyid)
-      puts commit.diff.patch
+      commit.hunks.each do |hunk|
+        puts hunk.path
+        puts hunk.header
+        hunk.lines.each { |line| puts line }
+      end
     end
   end
 end

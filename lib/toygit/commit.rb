@@ -16,6 +16,18 @@ module ToyGit
       @rugged_commit = rugged_commit
     end
 
+    def hunks
+      hunks = []
+      diff.each do |patch|
+        patch.each do |hunk|
+          hunks << Hunk.new(hunk)
+        end
+      end
+      hunks
+    end
+
+    private
+
     def diff
       @rugged_commit.parents[0].diff(@rugged_commit, DIFF_OPTIONS)
     end
