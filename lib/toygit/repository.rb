@@ -52,16 +52,25 @@ module ToyGit
     def give_toyids(history)
       prev_chapter = nil
       chapter_number = -1
+      prev_step = nil
       step_number = 0
+      action_number = 0
       history.each do |entry|
         chapter = entry[:chapter]
+        step = entry[:step]
         if prev_chapter != chapter
           chapter_number += 1
           step_number = 0
+          action_number = 0
+        elsif prev_step != step
+          step_number += 1
+          action_number = 0
+        else
+          action_number += 1
         end
-        entry[:toyid] = "#{chapter_number}-#{step_number}"
+        entry[:toyid] = "#{chapter_number}-#{step_number}-#{action_number}"
         prev_chapter = chapter
-        step_number += 1
+        prev_step = step
       end
     end
   end
