@@ -22,7 +22,7 @@ module ToyGit
       details = @rugged_commit.message.lines[2..-1]
       return blocks if details.nil?
       details.each do |line|
-        if line =~ /([[:alnum:]]+):/
+        if line =~ /^([[:alnum:]]+):$/
           label = $1
         else
           unless blocks.include? label
