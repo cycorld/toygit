@@ -47,6 +47,11 @@ module ToyGit
 
     def show(toyid)
       commit = @repo.commit_from_toyid(toyid)
+      puts commit.summary
+      commit.info.each do |label, text|
+        puts "#{label}:"
+        puts text
+      end
       commit.hunks.each do |hunk|
         puts hunk.path
         puts hunk.header

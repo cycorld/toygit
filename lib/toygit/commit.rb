@@ -16,6 +16,22 @@ module ToyGit
       @rugged_commit.message.lines[0]
     end
 
+    def info
+      blocks = {}
+      label = ''
+      @rugged_commit.message.lines[2..-1].each do |line|
+        if line =~ /([[:alnum:]]+):/
+          label = $1
+        else
+          unless blocks.include? label
+            blocks[label] = ''
+          end
+          blocks[label] << line
+        end
+      end
+      blocks
+    end
+
     def hunks
       hunks = []
       diff.each do |patch|
