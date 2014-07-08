@@ -18,6 +18,11 @@ when 'delete'
   command.delete target
 when 'show'
   command.show target
+when 'change'
+  kind = target.to_sym
+  toyid = ARGV[2]
+  message = ARGV[3]
+  command.change(kind, toyid, message)
 else
   raise 'Unknown command: %s' % type
 end

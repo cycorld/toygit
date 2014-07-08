@@ -58,5 +58,44 @@ module ToyGit
         hunk.lines.each { |line| puts line }
       end
     end
+
+    def change(kind, toyid, message)
+      unless @repo.rugged_repo.head.name == 'refs/heads/master'
+        raise 'Invalid branch: switch to the "master" branch first'
+      end
+
+      target_commit = nil
+      @repo.commits.each do |commit|
+        if commit.toyid.start_with? toyid
+          target_commit = commit
+          break
+        end
+      end
+      raise "Invalid toyid: #{toyid}" if target_commit.nil?
+
+      message = message.dup
+      message.gsub!(/\\/) { '\\\\' }
+      message.gsub!(/\//) { '\\/' }
+      message.gsub!(/&/) { '\\&' }
+      exp = nil
+      if kind == :chapter
+        exp = '1 s/^\[[[:blank:]]*' + target_commit.chapter + '[[:blank:]]*\]/[' + message + ']/'
+      elsif kind == :step
+        exp =
+          '1 s/^\[[[:blank:]]*' +
+          target_commit.chapter +
+          '[[:blank:]]*\][[:blank:]]*' +
+          target_commit.step +
+          '[[:blank:]]*/[' +
+          target_commit.chapter +
+          '] ' +
+          message +
+          '/'
+      else
+        raise "Invalid kind: #{kind}"
+      end
+
+      `git filter-branch --msg-filter 'sed -E "#{exp}"' -f -- HEAD`
+    end
   end
 end
