@@ -27,9 +27,9 @@ module ToyGit
       walker.each do |commit|
         raise 'Invalid ToyGit Repository: merge commit %s' % commit.oid if commit.parents.count > 1
         summary = commit.message.lines[0]
-        if summary =~ /\[([[:print:]]+)\][[:space:]]?([[:print:]]*)/
-          chapter = $1
-          step = $2
+        if summary =~ /^\[([[:print:]]+)\]([[:print:]]*)$/
+          chapter = $1.strip
+          step = $2.strip
         else
           chapter = ''
           step = summary
