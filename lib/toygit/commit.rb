@@ -19,7 +19,9 @@ module ToyGit
     def info
       blocks = {}
       label = ''
-      @rugged_commit.message.lines[2..-1].each do |line|
+      details = @rugged_commit.message.lines[2..-1]
+      return blocks if details.nil?
+      details.each do |line|
         if line =~ /([[:alnum:]]+):/
           label = $1
         else
