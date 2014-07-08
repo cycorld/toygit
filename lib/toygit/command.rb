@@ -7,7 +7,7 @@ module ToyGit
     end
 
     def list
-      head_hash = @repo.rugged_repo.head.target
+      head_hash = @repo.rugged_repo.head.target.oid
       @repo.commits.each do |commit|
         hash = commit.rugged_commit.oid
         star = (head_hash == hash ? '*' : '')
