@@ -5,15 +5,19 @@ module ToyGit
     }
 
     attr_reader :toyid
+    attr_reader :chapter
+    attr_reader :step
     attr_reader :rugged_commit
 
-    def initialize(toyid, rugged_commit)
+    def initialize(toyid, chapter, step, rugged_commit)
       @toyid = toyid
+      @chapter = chapter
+      @step = step
       @rugged_commit = rugged_commit
     end
 
     def summary
-      @rugged_commit.message.lines[0]
+      "[#{@chapter}] #{@step}"
     end
 
     def info
