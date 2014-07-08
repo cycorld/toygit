@@ -13,7 +13,7 @@ module ToyGit
         star = (head_hash == hash ? '*' : '')
         puts "#{commit.toyid}#{star}\t"\
           + "#{hash[0,7]}\t"\
-          + "[#{commit.chapter}] #{commit.step}"
+          + commit.summary
       end
     end
 

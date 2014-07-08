@@ -42,8 +42,6 @@ module ToyGit
       @commits = history.map do |entry|
         Commit.new(
           entry[:toyid],
-          entry[:chapter],
-          entry[:step],
           entry[:rugged_commit]
         )
       end
