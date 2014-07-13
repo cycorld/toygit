@@ -16,6 +16,20 @@ module ToyGit
       @commits[i]
     end
 
+    def chapter_changed_commit(commit, new_chapter, new_parent)
+      new_summary = "[#{new_chapter}] #{commit.step}"
+      summary_changed_commit(commit, new_summary, new_parent)
+    end
+
+    def step_changed_commit(commit, new_step, new_parent)
+      new_summary = "[#{commit.chapter}] #{new_step}"
+      summary_changed_commit(commit, new_summary, new_parent)
+    end
+
+    def parent_changed_commit(commit, new_parent)
+      modify_commit(commit, { parents: [new_parent] })
+    end
+
     private
 
     def prepare
@@ -72,6 +86,25 @@ module ToyGit
         prev_chapter = chapter
         prev_step = step
       end
+    end
+
+    def summary_changed_commit(commit, summary, parent)
+      args = {}
+
+      message_token = commit.rugged_commit.message.partition("\n")
+      message_token[0] = summary
+      args[:message] = message_token.join
+
+      unless parent.nil?
+        args[:parents] = [parent]
+      end
+
+      modify_commit(commit, args)
+    end
+
+    def modify_commit(commit, args)
+      new_args = commit.rugged_commit.to_hash.merge(args)
+      Rugged::Commit.create(@rugged_repo, new_args)
     end
   end
 end

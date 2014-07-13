@@ -84,15 +84,15 @@ module ToyGit
         end
 
         if phase == :working
-          parent_oid = commit.send(
+          parent_oid = @repo.send(
             changed_commit_method,
-            @repo.rugged_repo,
+            commit,
             message,
             parent_oid
           )
         elsif phase == :ended
-          parent_oid = commit.parent_changed_commit(
-            @repo.rugged_repo,
+          parent_oid = @repo.parent_changed_commit(
+            commit,
             parent_oid
           )
         end
