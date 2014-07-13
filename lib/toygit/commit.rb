@@ -48,10 +48,47 @@ module ToyGit
       hunks
     end
 
+    def parent
+      @rugged_commit.parents[0]
+    end
+
+    def chapter_changed_commit(repo, new_chapter, new_parent)
+      new_summary = "[#{new_chapter}] #{@step}"
+      summary_changed_commit(repo, new_summary, new_parent)
+    end
+
+    def step_changed_commit(repo, new_step, new_parent)
+      new_summary = "[#{@chapter}] #{new_step}"
+      summary_changed_commit(repo, new_summary, new_parent)
+    end
+
+    def parent_changed_commit(repo, new_parent)
+      modify(repo, { parents: [new_parent] })
+    end
+
     private
 
     def diff
       @rugged_commit.parents[0].diff(@rugged_commit, DIFF_OPTIONS)
+    end
+
+    def summary_changed_commit(repo, summary, parent)
+      args = {}
+
+      message_token = @rugged_commit.message.partition("\n")
+      message_token[0] = summary
+      args[:message] = message_token.join
+
+      unless parent.nil?
+        args[:parents] = [parent]
+      end
+
+      modify(repo, args)
+    end
+
+    def modify(repo, args)
+      new_args = @rugged_commit.to_hash.merge(args)
+      Rugged::Commit.create(repo, new_args)
     end
   end
 end

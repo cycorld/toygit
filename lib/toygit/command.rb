@@ -64,38 +64,45 @@ module ToyGit
         raise 'Invalid branch: switch to the "master" branch first'
       end
 
-      target_commit = nil
-      @repo.commits.each do |commit|
-        if commit.toyid.start_with? toyid
-          target_commit = commit
-          break
-        end
-      end
-      raise "Invalid toyid: #{toyid}" if target_commit.nil?
-
-      message = message.dup
-      message.gsub!(/\\/) { '\\\\' }
-      message.gsub!(/\//) { '\\/' }
-      message.gsub!(/&/) { '\\&' }
-      exp = nil
+      changed_commit_method = nil
       if kind == :chapter
-        exp = '1 s/^\[[[:blank:]]*' + target_commit.chapter + '[[:blank:]]*\]/[' + message + ']/'
+        changed_commit_method = :chapter_changed_commit
       elsif kind == :step
-        exp =
-          '1 s/^\[[[:blank:]]*' +
-          target_commit.chapter +
-          '[[:blank:]]*\][[:blank:]]*' +
-          target_commit.step +
-          '[[:blank:]]*/[' +
-          target_commit.chapter +
-          '] ' +
-          message +
-          '/'
+        changed_commit_method = :step_changed_commit
       else
         raise "Invalid kind: #{kind}"
       end
 
-      `git filter-branch --msg-filter 'sed -E "#{exp}"' -f -- HEAD`
+      phase = :standby
+      parent_oid = nil
+      @repo.commits.each do |commit|
+        start_with = commit.toyid.start_with? toyid
+        if phase == :standby and start_with
+          phase = :working
+        elsif phase == :working and (not start_with)
+          phase = :ended
+        end
+
+        if phase == :working
+          parent_oid = commit.send(
+            changed_commit_method,
+            @repo.rugged_repo,
+            message,
+            parent_oid
+          )
+        elsif phase == :ended
+          parent_oid = commit.parent_changed_commit(
+            @repo.rugged_repo,
+            parent_oid
+          )
+        end
+      end
+      raise "Invalid toyid: #{toyid}" if parent_oid.nil?
+
+      @repo.rugged_repo.references.update(
+        @repo.rugged_repo.head,
+        parent_oid
+      )
     end
   end
 end
