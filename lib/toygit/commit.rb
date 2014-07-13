@@ -48,10 +48,6 @@ module ToyGit
       hunks
     end
 
-    def parent
-      @rugged_commit.parents[0]
-    end
-
     def chapter_changed_commit(repo, new_chapter, new_parent)
       new_summary = "[#{new_chapter}] #{@step}"
       summary_changed_commit(repo, new_summary, new_parent)
