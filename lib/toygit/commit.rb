@@ -48,6 +48,10 @@ module ToyGit
       hunks
     end
 
+    def patch
+      diff.patch.force_encoding('utf-8')
+    end
+
     private
 
     def diff
