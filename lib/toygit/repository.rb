@@ -88,7 +88,10 @@ module ToyGit
         chapter = entry[:chapter]
         step = entry[:step]
         if prev_chapter != chapter
-          @step_counts["#{chapter_number}"] = step_number + 1 if chapter_number >= 0
+          if chapter_number >= 0
+            @step_counts["#{chapter_number}"] = step_number + 1
+            @action_counts["#{chapter_number}-#{step_number}"] = action_number + 1
+          end
           chapter_number += 1
           step_number = 0
           action_number = 0
