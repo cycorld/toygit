@@ -1,17 +1,27 @@
 module ToyGit
   class Hunk
     attr_reader :path
+    attr_reader :file
     attr_reader :header
     attr_reader :lines
 
-    def initialize(rugged_hunk)
+    def initialize(rugged_hunk, rugged_commit)
       delta = rugged_hunk.delta.delta
       @path = delta.new_file[:path]
+      @file = get_file(rugged_commit)
       @header = parse_header(rugged_hunk.header)
       @lines = get_lines(rugged_hunk)
     end
 
     private
+
+    def get_file(rugged_commit)
+      repo_path = rugged_commit.tree.repo.path
+      current_directory = `pwd`
+      blob = `cd '#{repo_path}' && git show '#{rugged_commit.oid}:#{@path}'`
+      `cd #{current_directory}`
+      blob
+    end
 
     def parse_header(header_string)
       unless header_string =~ /@@ \-(\d+),(\d+) \+(\d+),(\d+) @@.*/

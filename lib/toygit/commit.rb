@@ -42,7 +42,7 @@ module ToyGit
       hunks = []
       diff.each do |patch|
         patch.each do |hunk|
-          hunks << Hunk.new(hunk)
+          hunks << Hunk.new(hunk, parent)
         end
       end
       hunks
