@@ -52,10 +52,14 @@ module ToyGit
       diff.patch.force_encoding('utf-8')
     end
 
+    def parent
+      @rugged_commit.parents[0]
+    end
+
     private
 
     def diff
-      @rugged_commit.parents[0].diff(@rugged_commit, DIFF_OPTIONS)
+      parent.diff(@rugged_commit, DIFF_OPTIONS)
     end
   end
 end
