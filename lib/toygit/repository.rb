@@ -7,7 +7,22 @@ module ToyGit
 
     def initialize(dir = '.')
       @rugged_repo = Rugged::Repository.discover(dir)
+      @chapter_count = nil
+      @step_counts = {}
+      @action_counts = {}
       prepare
+    end
+
+    def chapter_count
+      @chapter_count
+    end
+
+    def step_count(toyid_chapter)
+      @step_counts[toyid_chapter]
+    end
+
+    def action_count(toyid_step)
+      @action_counts[toyid_step]
     end
 
     def commit_from_toyid(toyid)
@@ -73,10 +88,12 @@ module ToyGit
         chapter = entry[:chapter]
         step = entry[:step]
         if prev_chapter != chapter
+          @step_counts["#{chapter_number}"] = step_number + 1 if chapter_number >= 0
           chapter_number += 1
           step_number = 0
           action_number = 0
         elsif prev_step != step
+          @action_counts["#{chapter_number}-#{step_number}"] = action_number + 1
           step_number += 1
           action_number = 0
         else
@@ -86,6 +103,9 @@ module ToyGit
         prev_chapter = chapter
         prev_step = step
       end
+      @chapter_count = chapter_number
+      @step_counts["#{chapter_number}"] = step_number + 1
+      @action_counts["#{chapter_number}-#{step_number}"] = action_number + 1
     end
 
     def summary_changed_commit(commit, summary, parent)
