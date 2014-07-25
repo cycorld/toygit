@@ -24,10 +24,10 @@ module ToyGit
     end
 
     def parse_header(header_string)
-      unless header_string =~ /@@ \-(\d+),(\d+) \+(\d+),(\d+) @@.*/
+      unless header_string =~ /@@ \-(\d+)(,(\d+))? \+(\d+)(,(\d+))? @@.*/
         raise "Invalid header string: #{header_string}"
       end
-      { old_i: $1.to_i, old_n: $2.to_i, new_i: $3.to_i, new_n: $4.to_i }
+      { old_i: $1.to_i, old_n: $3.to_i, new_i: $4.to_i, new_n: $6.to_i }
     end
 
     def get_lines(rugged_hunk)
