@@ -58,51 +58,5 @@ module ToyGit
         hunk.lines.each { |line| puts line }
       end
     end
-
-    def change(kind, toyid, message)
-      unless @repo.rugged_repo.head.name == 'refs/heads/master'
-        raise 'Invalid branch: switch to the "master" branch first'
-      end
-
-      changed_commit_method = nil
-      if kind == :chapter
-        changed_commit_method = :chapter_changed_commit
-      elsif kind == :step
-        changed_commit_method = :step_changed_commit
-      else
-        raise "Invalid kind: #{kind}"
-      end
-
-      phase = :standby
-      parent_oid = nil
-      @repo.commits.each do |commit|
-        start_with = commit.toyid.start_with? toyid
-        if phase == :standby and start_with
-          phase = :working
-        elsif phase == :working and (not start_with)
-          phase = :ended
-        end
-
-        if phase == :working
-          parent_oid = @repo.send(
-            changed_commit_method,
-            commit,
-            message,
-            parent_oid
-          )
-        elsif phase == :ended
-          parent_oid = @repo.parent_changed_commit(
-            commit,
-            parent_oid
-          )
-        end
-      end
-      raise "Invalid toyid: #{toyid}" if parent_oid.nil?
-
-      @repo.rugged_repo.references.update(
-        @repo.rugged_repo.head,
-        parent_oid
-      )
-    end
   end
 end
