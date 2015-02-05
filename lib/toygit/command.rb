@@ -58,5 +58,20 @@ module ToyGit
         hunk.lines.each { |line| puts line }
       end
     end
+
+    def self.prepare(commit_msg_file_name)
+      commit_msg = File.read(commit_msg_file_name)
+      return 0 if commit_msg =~ /^#{ToyGit::Constant::TOYID}(.+)$/
+
+      commit_content = "tree #{`git write-tree`}"
+      parent = `git rev-parse "HEAD^0" 2>/dev/null`
+      commit_content << "parent #{parent}" if $?.success?
+      commit_content << "author #{`git var GIT_AUTHOR_IDENT`}"
+      commit_content << "committer #{`git var GIT_COMMITTER_IDENT`}"
+      toy_id = `echo "#{commit_content}" | git hash-object -t commit --stdin`
+      commit_msg << "\n#{ToyGit::Constant::TOYID}#{toy_id}"
+      File.write(commit_msg_file_name, commit_msg)
+      return 0
+    end
   end
 end

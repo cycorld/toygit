@@ -6,6 +6,12 @@ type = ARGV[0]
 raise 'Usage: toygit (do) [something]' if type.nil?
 target = ARGV[1]
 
+case type
+when 'prepare'
+  ToyGit::Command::prepare target
+  exit
+end
+
 command = ToyGit::Command.new(ToyGit::Repository.new)
 case type
 when 'list'
