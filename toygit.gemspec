@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date        = Time.now.strftime('%Y-%m-%d')
   s.summary     = 'ToyGit'
   s.description = 'Toy Git'
-  s.authors     = ['GYUMIN SIM']
+  s.authors     = ['Gyumin Sim']
   s.email       = 'sim0629@gmail.com'
   s.files       = ['bin/toygit', 'lib/toygit.rb']
   s.files       += Dir.glob('lib/toygit/*.rb')
