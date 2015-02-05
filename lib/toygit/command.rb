@@ -2,8 +2,6 @@ module ToyGit
   class Command
     def initialize(repo)
       @repo = repo
-
-      @repo.rugged_repo.config['notes.rewriteRef'] = 'refs/notes/commits'
     end
 
     def list
