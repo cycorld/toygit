@@ -59,6 +59,20 @@ module ToyGit
       end
     end
 
+    def self.init
+      toplevel_path = `git rev-parse --show-toplevel`.strip
+      prepare_path = File.join(toplevel_path, '.git/hooks/prepare-commit-msg')
+      prepare_command = 'toygit prepare "$1"'
+      if File.exists? prepare_path
+        $stderr.puts '\'prepare-commit-msg\' hook already exists.'
+        $stderr.puts "Append \'#{prepare_command}\' to the hook file manually."
+        return 1
+      end
+      File.write(prepare_path, prepare_command + "\n")
+      File.chmod(0755, prepare_path)
+      return 0
+    end
+
     def self.prepare(commit_msg_file_name)
       commit_msg = File.read(commit_msg_file_name)
       return 0 if commit_msg =~ /^#{ToyGit::Constant::TOYID}(.+)$/

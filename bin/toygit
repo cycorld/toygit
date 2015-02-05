@@ -7,6 +7,9 @@ raise 'Usage: toygit (do) [something]' if type.nil?
 target = ARGV[1]
 
 case type
+when 'init'
+  ToyGit::Command::init
+  exit
 when 'prepare'
   ToyGit::Command::prepare target
   exit
