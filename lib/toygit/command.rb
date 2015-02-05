@@ -7,10 +7,9 @@ module ToyGit
     def list
       head_hash = @repo.rugged_repo.head.target.oid
       @repo.commits.each do |commit|
-        hash = commit.rugged_commit.oid
-        star = (head_hash == hash ? '*' : '')
-        puts "#{commit.toyid}#{star}\t"\
-          + "#{hash[0,7]}\t"\
+        star = (head_hash == commit.rugged_commit.oid ? '*' : '')
+        toyid = commit.toyid.nil? ? '(null)' : commit.toyid[0,6]
+        puts "#{toyid}#{star}\t"\
           + commit.summary
       end
     end
@@ -46,10 +45,6 @@ module ToyGit
     def show(toyid)
       commit = @repo.commit_from_toyid(toyid)
       puts commit.summary
-      commit.info.each do |label, text|
-        puts "#{label}:"
-        puts text
-      end
       commit.hunks.each do |hunk|
         puts hunk.path
         puts hunk.header

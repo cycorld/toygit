@@ -7,94 +7,33 @@ module ToyGit
 
     def initialize(dir = '.')
       @rugged_repo = Rugged::Repository.discover(dir)
-      @chapter_count = nil
-      @step_counts = {}
-      @action_counts = {}
-      prepare
-    end
-
-    def chapter_count
-      @chapter_count
-    end
-
-    def step_count(toyid_chapter)
-      @step_counts[toyid_chapter]
-    end
-
-    def action_count(toyid_step)
-      @action_counts[toyid_step]
+      @commits = prepare_commits
     end
 
     def commit_from_toyid(toyid)
-      i = @commits.find_index { |commit| commit.toyid == toyid }
+      i = @commits.find_index do |commit|
+        commit.toyid and commit.toyid.start_with? toyid
+      end
       raise 'Invalid ToyId: %s' % toyid if i.nil?
       @commits[i]
     end
 
     private
 
-    def prepare
-      history = []
+    def prepare_commits
+      commits = []
 
       master = @rugged_repo.ref('refs/heads/master')
       walker = Rugged::Walker.new(@rugged_repo)
       walker.push master.target
-      walker.each do |commit|
-        raise 'Invalid ToyGit Repository: merge commit %s' % commit.oid if commit.parents.count > 1
-        summary = commit.message.lines[0]
-        if summary =~ /^\[([[:print:]]+)\]([[:print:]]*)$/
-          chapter = $1.strip
-          step = $2.strip
-        else
-          chapter = ''
-          step = summary
+      walker.each do |rugged_commit|
+        if rugged_commit.parents.count > 1
+          raise 'Invalid ToyGit Repository: merge commit %s' % rugged_commit.oid
         end
-        history.push({chapter: chapter, step: step, rugged_commit: commit})
+        commits << Commit.new(rugged_commit)
       end
 
-      history.reverse!
-      give_toyids(history)
-      @commits = history.map do |entry|
-        Commit.new(
-          entry[:toyid],
-          entry[:chapter],
-          entry[:step],
-          entry[:rugged_commit]
-        )
-      end
-    end
-
-    def give_toyids(history)
-      prev_chapter = nil
-      chapter_number = -1
-      prev_step = nil
-      step_number = 0
-      action_number = 0
-      history.each do |entry|
-        chapter = entry[:chapter]
-        step = entry[:step]
-        if prev_chapter != chapter
-          if chapter_number >= 0
-            @step_counts["#{chapter_number}"] = step_number + 1
-            @action_counts["#{chapter_number}-#{step_number}"] = action_number + 1
-          end
-          chapter_number += 1
-          step_number = 0
-          action_number = 0
-        elsif prev_step != step
-          @action_counts["#{chapter_number}-#{step_number}"] = action_number + 1
-          step_number += 1
-          action_number = 0
-        else
-          action_number += 1
-        end
-        entry[:toyid] = "#{chapter_number}-#{step_number}-#{action_number}"
-        prev_chapter = chapter
-        prev_step = step
-      end
-      @chapter_count = chapter_number
-      @step_counts["#{chapter_number}"] = step_number + 1
-      @action_counts["#{chapter_number}-#{step_number}"] = action_number + 1
+      commits.reverse
     end
   end
 end
