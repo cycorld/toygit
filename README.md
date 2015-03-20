@@ -7,6 +7,7 @@
 - goto : ToyFix 브랜치를 만들면서 지정된 ToyId에 해당하는 커밋으로 이동한다.
 - return : master 브랜치를 ToyFix 브랜치로 리베이스 한다.
 - delete : 지정된 ToyId에 해당하는 커밋을 제거하고 리베이스 한다.
+- hash : ToyID를 넣으면 원래 commit의 hash 값을 리턴한다.
 
 ## Todo
 
