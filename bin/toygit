@@ -27,6 +27,8 @@ when 'delete'
   command.delete target
 when 'show'
   command.show target
+when 'hash'
+  command.hash target
 else
   raise 'Unknown command: %s' % type
 end

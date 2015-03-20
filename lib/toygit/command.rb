@@ -52,6 +52,11 @@ module ToyGit
       end
     end
 
+    def hash(toyid)
+      commit = @repo.commit_from_toyid(toyid)
+      puts commit.rugged_commit.oid
+    end
+
     def self.init
       toplevel_path = `git rev-parse --show-toplevel`.strip
       prepare_path = File.join(toplevel_path, '.git/hooks/prepare-commit-msg')
