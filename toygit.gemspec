@@ -14,5 +14,5 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   # Dependencies
-  s.add_runtime_dependency 'rugged', '0.21.0'
+  s.add_runtime_dependency 'rugged', '0.21.4'
 end
