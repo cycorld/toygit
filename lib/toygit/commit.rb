@@ -1,7 +1,8 @@
 module ToyGit
   class Commit
     DIFF_OPTIONS = {
-      ignore_whitespace: true
+      ignore_whitespace: true,
+      context_lines: 50
     }
 
     attr_reader :toyid
